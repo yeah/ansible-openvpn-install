@@ -8,6 +8,9 @@
     - name: Restart openvpn
       service: name=openvpn state=restarted
 
+    - name: Restart unbound
+      service: name=unbound state=restarted
+
 
   tasks:
     - name: Upload local user's public key for SSH
@@ -23,6 +26,17 @@
 
     - name: Install ntp
       action: apt pkg=ntp state=installed
+
+    - name: Install unbound
+      action: apt pkg=unbound state=installed
+
+    - name: Configure unbound interface
+      template: src=templates/unbound/interface.conf.j2 dest=/etc/unbound/unbound.conf.d/interface.conf
+      notify: Restart unbound
+
+    - name: Configure unbound access control
+      template: src=templates/unbound/access-control.conf.j2 dest=/etc/unbound/unbound.conf.d/access-control.conf
+      notify: Restart unbound
 
     - name: Install fail2ban
       action: apt pkg=fail2ban state=installed
@@ -69,10 +83,14 @@
         responses:
           (?m)^IP address: ""
           (?m)^Port: "\b\b\b\b{{ansible_port - 20}}"
-          (?m)^DNS \[1-\d\]: "\b1" # Google
+          (?m)^DNS \[1-\d\]: ""
           (?m)^Client name: "\b\b\b\b\b\b{{inventory_hostname}}"
           (?m)^Press any key to continue\.\.\.: ""
           (?m)^External IP: "{{ansible_host}}"
+
+    - name: "Fine tune OpenVPN server: Use unbound as DNS server"
+      action: replace dest=/etc/openvpn/server.conf regexp="^push \"dhcp-option DNS.*" replace="push \"dhcp-option DNS 10.{{ansible_default_ipv4.address.split('.')[2]}}.{{ansible_default_ipv4.address.split('.')[3]}}.1\""
+      notify: Restart openvpn
 
     - name: "Fine tune OpenVPN server: Keepalive"
       action: lineinfile dest=/etc/openvpn/server.conf regexp="^keepalive" line="keepalive 10 30"

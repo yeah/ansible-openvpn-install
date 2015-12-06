@@ -1,0 +1,9 @@
+# THIS FILE HAS BEEN CREATED BY ANSIBLE
+
+server:
+  access-control: 0.0.0.0/0 refuse
+  access-control: 10.{{ansible_default_ipv4.address.split('.')[2]}}.{{ansible_default_ipv4.address.split('.')[3]}}.0/24 allow
+  access-control: 127.0.0.0/8 allow
+  access-control: ::0/0 refuse
+  access-control: ::1 allow
+  access-control: ::ffff:127.0.0.1 allow
