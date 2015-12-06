@@ -37,10 +37,10 @@
       action: apt pkg=unattended-upgrades state=present
 
     - name: Configure Apt unattended upgrades
-      action: copy src=config/unattended-upgrades dest=/etc/apt/apt.conf.d/50unattended-upgrades
+      action: copy src=files/apt/unattended-upgrades dest=/etc/apt/apt.conf.d/50unattended-upgrades
 
     - name: Configure Apt periodic
-      action: copy src=config/periodic dest=/etc/apt/apt.conf.d/02periodic
+      action: copy src=files/apt/periodic dest=/etc/apt/apt.conf.d/02periodic
 
     - name: Install Python pip
       action: apt pkg=python-pip state=present
