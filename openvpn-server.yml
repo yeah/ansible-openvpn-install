@@ -60,7 +60,7 @@
     - name: "Tweak openvpn-install: Keepalive"
       action: lineinfile dest=/root/openvpn-install.sh insertafter="remote \$IP \$PORT" line="keepalive 10 30"
 
-    - name: Install OpenVPN using the Nyr Installer
+    - name: Run openvpn-install
       expect:
         command: bash /root/openvpn-install.sh
         creates: /etc/openvpn/server.conf
