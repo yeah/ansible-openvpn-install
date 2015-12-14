@@ -1,2 +1,0 @@
-[hosts]
-VirtualMachine ansible_port=1022   ansible_host=10.0.0.10

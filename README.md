@@ -20,7 +20,7 @@ If you can get your hands on Ansible 2 via your favorite package manager, that s
 
 ## Usage
 
-1. Adapt your inventory (servers) in the `production` file.
+1. Copy `production.example` to `procuction` and adapt your inventory (servers).
 2. Run the playbook using `ansible-playbook site.yml`.
 3. Profit!
 
