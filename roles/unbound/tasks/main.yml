@@ -1,0 +1,11 @@
+---
+- name: Install unbound
+  action: apt pkg=unbound state=installed
+
+- name: Configure unbound interface
+  template: src=templates/interface.conf.j2 dest=/etc/unbound/unbound.conf.d/interface.conf
+  notify: Restart unbound
+
+- name: Configure unbound access control
+  template: src=templates/access-control.conf.j2 dest=/etc/unbound/unbound.conf.d/access-control.conf
+  notify: Restart unbound

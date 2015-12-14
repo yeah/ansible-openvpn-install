@@ -13,17 +13,6 @@
 - name: Install ntp
   action: apt pkg=ntp state=installed
 
-- name: Install unbound
-  action: apt pkg=unbound state=installed
-
-- name: Configure unbound interface
-  template: src=templates/unbound/interface.conf.j2 dest=/etc/unbound/unbound.conf.d/interface.conf
-  notify: Restart unbound
-
-- name: Configure unbound access control
-  template: src=templates/unbound/access-control.conf.j2 dest=/etc/unbound/unbound.conf.d/access-control.conf
-  notify: Restart unbound
-
 - name: Install fail2ban
   action: apt pkg=fail2ban state=installed
 

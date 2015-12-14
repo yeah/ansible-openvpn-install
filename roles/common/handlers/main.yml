@@ -4,6 +4,3 @@
 
 - name: Restart openvpn
   service: name=openvpn state=restarted
-
-- name: Restart unbound
-  service: name=unbound state=restarted
