@@ -1,0 +1,98 @@
+---
+- name: Upload local user's public key for SSH
+  authorized_key: user="root"
+                  key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+- name: Disallow password authentication
+  action: lineinfile dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no"
+  notify: Restart sshd
+
+- name: Apt dist upgrade
+  apt: upgrade=dist
+
+- name: Install ntp
+  action: apt pkg=ntp state=installed
+
+- name: Install unbound
+  action: apt pkg=unbound state=installed
+
+- name: Configure unbound interface
+  template: src=templates/unbound/interface.conf.j2 dest=/etc/unbound/unbound.conf.d/interface.conf
+  notify: Restart unbound
+
+- name: Configure unbound access control
+  template: src=templates/unbound/access-control.conf.j2 dest=/etc/unbound/unbound.conf.d/access-control.conf
+  notify: Restart unbound
+
+- name: Install fail2ban
+  action: apt pkg=fail2ban state=installed
+
+- name: Install ca-certificates
+  action: apt pkg=ca-certificates state=installed
+
+- name: Install apticron
+  action: apt pkg=apticron state=present
+
+- name: Install unattended-upgrades
+  action: apt pkg=unattended-upgrades state=present
+
+- name: Configure Apt unattended upgrades
+  action: copy src=files/apt/unattended-upgrades dest=/etc/apt/apt.conf.d/50unattended-upgrades
+
+- name: Configure Apt periodic
+  action: copy src=files/apt/periodic dest=/etc/apt/apt.conf.d/02periodic
+
+- name: Install Python pip
+  action: apt pkg=python-pip state=present
+
+- name: Remove Python pexpect that came with Debian
+  action: apt pkg=python-pexpect state=absent
+
+- name: Install Python pexpect using pip
+  action: command pip install pexpect
+
+- name: Download openvpn-install
+  get_url: url=https://git.io/vpn dest=/root/openvpn-install.sh mode=0700
+
+- name: "Tweak openvpn-install: Subnet"
+  action: replace dest=/root/openvpn-install.sh regexp="10\.8\.0\.0" replace="10.{{ansible_default_ipv4.address.split('.')[2]}}.{{ansible_default_ipv4.address.split('.')[3]}}.0"
+
+- name: "Tweak openvpn-install: Keepalive"
+  action: lineinfile dest=/root/openvpn-install.sh insertafter="remote \$IP \$PORT" line="keepalive 10 30"
+
+- name: Run openvpn-install
+  expect:
+    command: bash /root/openvpn-install.sh
+    creates: /etc/openvpn/server.conf
+    echo: yes
+    timeout: 600
+    responses:
+      (?m)^IP address: ""
+      (?m)^Port: "\b\b\b\b{{ansible_port - 20}}"
+      (?m)^DNS \[1-\d\]: ""
+      (?m)^Client name: "\b\b\b\b\b\b{{inventory_hostname}}"
+      (?m)^Press any key to continue\.\.\.: ""
+      (?m)^External IP: "{{ansible_host}}"
+
+- name: "Fine tune OpenVPN server: Use unbound as DNS server"
+  action: replace dest=/etc/openvpn/server.conf regexp="^push \"dhcp-option DNS.*" replace="push \"dhcp-option DNS 10.{{ansible_default_ipv4.address.split('.')[2]}}.{{ansible_default_ipv4.address.split('.')[3]}}.1\""
+  notify: Restart openvpn
+
+- name: "Fine tune OpenVPN server: Keepalive"
+  action: lineinfile dest=/etc/openvpn/server.conf regexp="^keepalive" line="keepalive 10 30"
+  notify: Restart openvpn
+
+- name: "Fine tune OpenVPN server: No persistent client IP addresses"
+  action: lineinfile dest=/etc/openvpn/server.conf regexp="^ifconfig-pool-persist"                           state=absent
+  notify: Restart openvpn
+
+- name: "Fine tune OpenVPN server: Multiple logins"
+  action: lineinfile dest=/etc/openvpn/server.conf                     line="duplicate-cn"
+  notify: Restart openvpn
+
+- name: Download client configuration
+  fetch:
+    src: "/root/{{inventory_hostname}}.ovpn"
+    dest: "~/Downloads"
+    fail_on_missing: yes
+    flat: yes
