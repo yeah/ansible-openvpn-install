@@ -1,2 +1,2 @@
 ---
-- include: common.yml
+- include: openvpn.yml
