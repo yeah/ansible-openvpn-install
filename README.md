@@ -21,7 +21,7 @@ If you can get your hands on Ansible 2 via your favorite package manager, that s
 ## Usage
 
 1. Copy `production.example` to `production` and adapt your inventory (servers).
-2. Run the playbook using `ansible-playbook site.yml`.
+2. Run the playbook using `ansible-playbook --ask-pass site.yml`.
 3. Profit!
 
 In its last step, the playbook will try to download your `.ovpn` client configuration file(s) to `~/Downloads`. Be sure this folder exists.
