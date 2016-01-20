@@ -14,9 +14,9 @@ On first run, the playbook will login, install your current public key (found in
 
 ### Ansible 2
 
-At the time of writing, Ansible 2.0 isn't released yet, so you'd have to [run it form source](http://docs.ansible.com/ansible/intro_installation.html#running-from-source).
+Ansible 2 is required. It's still quite new, so your favorite package manager might not have it yet. If that's the case, you'd have to [run it form source](http://docs.ansible.com/ansible/intro_installation.html#running-from-source).
 
-If you can get your hands on Ansible 2 via your favorite package manager, that should be fine as well.
+If your package manager has Ansible 2, using that is preferred, obviously.
 
 ## Usage
 
