@@ -4,5 +4,6 @@ Unattended-Upgrade::Origins-Pattern {
   "o=*";
 };
 
+Unattended-Upgrade::MailOnlyOnError "true";
 Unattended-Upgrade::Remove-Unused-Dependencies "true";
 Unattended-Upgrade::Automatic-Reboot "true";
