@@ -1,0 +1,11 @@
+---
+- name: Install fail2ban
+  action: apt pkg=fail2ban state=installed
+
+- name: Configure openvpn jail
+  template: src=templates/openvpn-jail.conf.j2 dest=/etc/fail2ban/jail.d/openvpn.conf
+  notify: Restart fail2ban
+
+- name: Configure openvpn filter
+  template: src=files/openvpn-filter.conf dest=/etc/fail2ban/filter.d/openvpn.conf
+  notify: Restart fail2ban

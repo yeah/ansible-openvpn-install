@@ -14,7 +14,6 @@
   apt: pkg={{item}} state=installed
   with_items:
     - ntp
-    - fail2ban
     - ca-certificates
     - htop
     - iotop

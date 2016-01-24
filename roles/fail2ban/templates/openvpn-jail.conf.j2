@@ -1,0 +1,9 @@
+# THIS FILE HAS BEEN CREATED BY ANSIBLE
+
+[openvpn]
+enabled = true
+port = {{ansible_port - 20}}
+protocol = udp
+filter = openvpn
+logpath = /var/log/syslog
+maxretry = 3
