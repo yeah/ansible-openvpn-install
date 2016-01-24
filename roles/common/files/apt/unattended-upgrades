@@ -1,10 +1,7 @@
 // THIS FILE HAS BEEN CREATED BY ANSIBLE
 
-Unattended-Upgrade::Allowed-Origins {
-  "${distro_id} ${distro_codename}";
-  "${distro_id} ${distro_codename}-lts";
-  "${distro_id} ${distro_codename}-updates";
-  "${distro_id} ${distro_codename}-security";
+Unattended-Upgrade::Origins-Pattern {
+  "o=*";
 };
 
 Unattended-Upgrade::Remove-Unused-Dependencies "true";
