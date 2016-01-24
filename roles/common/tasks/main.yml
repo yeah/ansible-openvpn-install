@@ -27,3 +27,6 @@
 
 - name: Configure Apt periodic
   action: copy src=files/apt/periodic dest=/etc/apt/apt.conf.d/02periodic
+
+- name: Enable daily apt cron script if disabled by provider (LES!)
+  command: mv /etc/cron.daily/apt.disabled /etc/cron.daily/apt removes=/etc/cron.daily/apt.disabled creates=/etc/cron.daily/apt
