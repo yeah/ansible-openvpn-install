@@ -19,9 +19,6 @@
 - name: Install ca-certificates
   action: apt pkg=ca-certificates state=installed
 
-- name: Install apticron
-  action: apt pkg=apticron state=present
-
 - name: Install unattended-upgrades
   action: apt pkg=unattended-upgrades state=present
 
