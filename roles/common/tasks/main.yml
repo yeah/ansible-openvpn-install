@@ -10,14 +10,18 @@
 - name: Apt dist upgrade
   apt: upgrade=dist
 
-- name: Install ntp
-  action: apt pkg=ntp state=installed
-
-- name: Install fail2ban
-  action: apt pkg=fail2ban state=installed
-
-- name: Install ca-certificates
-  action: apt pkg=ca-certificates state=installed
+- name: Install a few basic packages
+  apt: pkg={{item}} state=installed
+  with_items:
+    - ntp
+    - fail2ban
+    - ca-certificates
+    - htop
+    - iotop
+    - vim
+    - less
+    - whiptail
+    - man
 
 - name: Install unattended-upgrades
   action: apt pkg=unattended-upgrades state=present
