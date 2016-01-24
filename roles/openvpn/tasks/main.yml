@@ -6,7 +6,7 @@
   action: apt pkg=python-pexpect state=absent
 
 - name: Install Python pexpect using pip
-  action: command pip install pexpect
+  pip: name=pexpect state=present
 
 - name: Download openvpn-install
   get_url: url=https://git.io/vpn dest=/root/openvpn-install.sh mode=0700
